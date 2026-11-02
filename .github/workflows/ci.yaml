@@ -73,7 +73,7 @@ jobs:
         working-directory: training_trigger
     env:
       PYTHONPATH: ${{ github.workspace }}/training_trigger
-
+        COMPOSE_PROJECT_DIR: ${{ github.workspace }}
     steps:
       - uses: actions/checkout@v4
 

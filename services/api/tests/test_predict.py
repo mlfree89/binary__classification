@@ -1,6 +1,5 @@
 from fastapi.testclient import TestClient
 from unittest.mock import patch, MagicMock
-from app.main import app
 
 
 def test_predict():
@@ -8,9 +7,15 @@ def test_predict():
     mock_cursor = MagicMock()
     mock_conn.cursor.return_value.__enter__.return_value = mock_cursor
 
-    with patch("app.main.get_db_connection") as mock_db:
+    mock_predictor = MagicMock()
+    mock_predictor.predict.return_value = "<=50K"
+
+    with patch("app.predictor.Predictor", return_value=mock_predictor), \
+         patch("app.main.get_db_connection") as mock_db:
+
         mock_db.return_value.__enter__.return_value = mock_conn
 
+        from app.main import app
         with TestClient(app) as client:
             response = client.post(
                 "/predict",
