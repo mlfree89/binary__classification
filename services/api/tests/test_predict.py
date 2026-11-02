@@ -1,4 +1,3 @@
-from fastapi.testclient import TestClient
 from unittest.mock import patch, MagicMock
 
 
@@ -6,16 +5,18 @@ def test_predict():
     mock_conn = MagicMock()
     mock_cursor = MagicMock()
     mock_conn.cursor.return_value.__enter__.return_value = mock_cursor
+    mock_conn.__enter__ = MagicMock(return_value=mock_conn)
+    mock_conn.__exit__ = MagicMock(return_value=False)
 
     mock_predictor = MagicMock()
     mock_predictor.predict.return_value = "<=50K"
 
-    with patch("app.predictor.Predictor", return_value=mock_predictor), \
-         patch("app.main.get_db_connection") as mock_db:
-
-        mock_db.return_value.__enter__.return_value = mock_conn
+    with patch("app.main.get_db_connection", return_value=mock_conn), \
+         patch("app.main.Predictor", return_value=mock_predictor):
 
         from app.main import app
+        from fastapi.testclient import TestClient
+
         with TestClient(app) as client:
             response = client.post(
                 "/predict",
@@ -39,3 +40,4 @@ def test_predict():
 
             assert response.status_code == 200
             assert "prediction" in response.json()
+

@@ -13,10 +13,16 @@ COLUMNS = [
 
 
 def mock_minio():
-    train = pd.DataFrame([[1] * 15, [2] * 15], columns=COLUMNS)
-    test = pd.DataFrame([[3] * 15], columns=COLUMNS)
-    return train, test
+    train = pd.DataFrame([
+        [35, "Private", 100000, "Bachelors", 13, "Never-married", "Sales", "Not-in-family", "White", "Male", 0, 0, 40, "United-States", "<=50K"],
+        [45, "Self-emp", 200000, "Masters", 14, "Married", "Tech", "Husband", "White", "Male", 0, 0, 50, "United-States", ">50K"],
+    ], columns=COLUMNS)
 
+    test = pd.DataFrame([
+        [25, "Private", 50000, "HS-grad", 9, "Never-married", "Sales", "Not-in-family", "White", "Female", 0, 0, 35, "United-States", "<=50K"],
+    ], columns=COLUMNS)
+
+    return train, test
 
 def mock_postgres():
     return None
