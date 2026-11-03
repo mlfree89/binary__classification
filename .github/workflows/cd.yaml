@@ -1,4 +1,4 @@
-```yaml
+
 name: CD
 
 on:
@@ -53,4 +53,4 @@ jobs:
           file: evidently_monitoring/Dockerfile
           push: true
           tags: mlfree89/binary-classification-evidently:latest
-```
+
