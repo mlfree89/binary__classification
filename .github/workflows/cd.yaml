@@ -1,0 +1,50 @@
+name: CD
+
+on:
+  workflow_run:
+    workflows: ["CI"]
+    types:
+      - completed
+    branches: [main]
+
+jobs:
+  build-and-push:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push API
+        uses: docker/build-push-action@v5
+        with:
+          context: services/api
+          push: true
+          tags: mlfree89/binary-classification-api:latest
+
+      - name: Build and push Trainer
+        uses: docker/build-push-action@v5
+        with:
+          context: services/trainer
+          push: true
+          tags: mlfree89/binary-classification-trainer:latest
+
+      - name: Build and push Training Trigger
+        uses: docker/build-push-action@v5
+        with:
+          context: training_trigger
+          push: true
+          tags: mlfree89/binary-classification-training-trigger:latest
+
+      - name: Build and push Evidently
+        uses: docker/build-push-action@v5
+        with:
+          context: evidently_monitoring
+          push: true
+          tags: mlfree89/binary-classification-evidently:latest
