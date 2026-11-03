@@ -1,3 +1,4 @@
+```yaml
 name: CD
 
 on:
@@ -24,27 +25,32 @@ jobs:
       - name: Build and push API
         uses: docker/build-push-action@v5
         with:
-          context: services/api
+          context: .
+          file: services/api/Dockerfile
           push: true
           tags: mlfree89/binary-classification-api:latest
 
       - name: Build and push Trainer
         uses: docker/build-push-action@v5
         with:
-          context: services/trainer
+          context: .
+          file: services/trainer/dockerfile
           push: true
           tags: mlfree89/binary-classification-trainer:latest
 
       - name: Build and push Training Trigger
         uses: docker/build-push-action@v5
         with:
-          context: training_trigger
+          context: .
+          file: training_trigger/Dockerfile
           push: true
           tags: mlfree89/binary-classification-training-trigger:latest
 
       - name: Build and push Evidently
         uses: docker/build-push-action@v5
         with:
-          context: evidently_monitoring
+          context: .
+          file: evidently_monitoring/Dockerfile
           push: true
           tags: mlfree89/binary-classification-evidently:latest
+```
